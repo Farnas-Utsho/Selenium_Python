@@ -1,8 +1,10 @@
+
 from selenium import webdriver
 import os
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
+from booking.booking_filtration import  BookingFiltration
 
 
 import booking.constants as const
@@ -141,7 +143,7 @@ class Booking(webdriver.Firefox):
         # Loop to find the check-in date
         for element in in_date:
             date_value = element.get_attribute("data-date")
-            print("Collected Date:", date_value)
+           # print("Collected Date:", date_value)
 
             if date_value == check_in_date:
                 element.click()
@@ -187,6 +189,66 @@ class Booking(webdriver.Firefox):
                 WebDriverWait(self, 5).until(
                     EC.presence_of_all_elements_located((By.XPATH, xpath))  # Wait for new dates to load
                 )
+
+
+
+    def number_persons_room(self,adults):
+
+
+        try:
+            adder=WebDriverWait(self,20).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR,'.c7ce171153'))
+            )
+            adder.click()
+            print(" Adder Found ")
+
+            adult_decrease=WebDriverWait(self,20).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR,"div.a7a72174b8:nth-child(1) > div:nth-child(3) > button:nth-child(1)"))
+            )
+            for _ in range(1):
+                adult_decrease.click()
+                print("Adult decreased")
+
+
+
+
+            adder = WebDriverWait(self, 20).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR, '.c7ce171153'))
+            )
+            adder.click()
+            print(" Adder Found ")
+            adult_increase=WebDriverWait(self,10).until(
+                EC.element_to_be_clickable((By.CSS_SELECTOR,"div.a7a72174b8:nth-child(1) > div:nth-child(3) > button:nth-child(3)"))
+            )
+            print("Adult  element Found ")
+            for _ in range(adults-1) :
+                adult_increase.click()
+
+            # Use JavaScript to ensure any aria-hidden or clickability issues are bypassed
+
+
+            print("Adult added")
+
+        except Exception as e:
+            print("An error occurred:", e)
+
+    def search_item(self):
+        try:
+         search_it=WebDriverWait(self,10).until(
+            EC.element_to_be_clickable((By.CSS_SELECTOR,'button.a4c1805887'))
+            )
+         search_it.click()
+        except Exception as e:
+            print(" An error occurred : " , e )
+
+
+
+    def apply_filtrations(self):
+
+       filtration= BookingFiltration(driver=self)
+       filtration.apply_star_rating(star_value = 5)
+
+
 
 
 
