@@ -246,7 +246,9 @@ class Booking(webdriver.Firefox):
     def apply_filtrations(self):
 
        filtration= BookingFiltration(driver=self)
-       filtration.apply_star_rating(star_value = 5)
+       # filtration.apply_star_rating(star_value = 5)
+       filtration.match_filtration()
+
 
 
 

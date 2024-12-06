@@ -1,10 +1,13 @@
 #This file will include a class with instance methods
 #That will be responsible to interact with our website
 #After we have some results , to apply to filtration
+from dask.multiprocessing import exceptions
+from lxml.etree import XPath
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import StaleElementReferenceException
 
 
@@ -12,31 +15,68 @@ class BookingFiltration:
     def __init__(self, driver: WebDriver):
         self.driver = driver
 
-    def apply_star_rating(self, star_value):
-        # Wait for the star filtration box to be visible before interacting with it
+    # def apply_star_rating(self, star_value):
+    #     # Wait for the star filtration box to be visible before interacting with it
+    #     try:
+    #         star_filtration_box = WebDriverWait(self.driver, 10).until(
+    #             EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[data-testid='filters-group']"))
+    #         )
+    #         print(len(star_filtration_box))
+    #         print("Target element found")
+    #         elements_count = len(self.driver.find_elements(By.CSS_SELECTOR, "div[data-testid='filters-group']"))
+    #         for i in range(elements_count):
+    #
+    #                 element = self.driver.find_elements(By.CSS_SELECTOR, "div[data-testid='filters-group']")[i]
+    #                 div_id = element.get_attribute("id")
+    #                 print(f"Div ID: {div_id}")
+    #
+    #     except Exception as e:
+    #         print(f"Error occurred: {e}")
+
+    def match_filtration(self):
+        print("Property Ratings Execution Started")
         try:
-            star_filtration_box = WebDriverWait(self.driver, 10).until(
-                EC.visibility_of_element_located((By.CSS_SELECTOR, "div.ffb9c3d6a3:nth-child(3)"))
+            # Wait for the elements to be present
+            WebDriverWait(self.driver, 10).until(
+                EC.presence_of_all_elements_located((By.CSS_SELECTOR, "div[data-testid='filters-group']"))
             )
+            print("Target elements found")
 
-            # Find all child elements (stars) within the star_filtration_box
-            star_child_elements = star_filtration_box.find_elements(By.CSS_SELECTOR, '*')
-            print(len(star_child_elements))
-            for star_element in star_child_elements:
+
+            targets = self.driver.find_elements(By.CSS_SELECTOR, "div[data-testid='filters-group']")
+
+            for target in targets :
                 try:
-                    # Wait until the element is clickable before clicking it
-                    WebDriverWait(self.driver, 5).until(
-                        EC.element_to_be_clickable(star_element)
-                    )
+                    legend = target.find_element(By.XPATH,'/html/body/div[4]/div/div[2]/div/div[2]/div[3]/div[1]/div[3]/div[9]/fieldset/div[3]/legend')
 
-                    # Check if the innerHTML matches the desired star value and click if so
-                    if str(star_element.get_attribute('innerHTML')).strip() == f"{star_value} stars":
-                        star_element.click()
-                        break  # Exit the loop after applying the filter
-                except StaleElementReferenceException:
-                    # If the element becomes stale, retry by re-fetching the element
-                    star_child_elements = star_filtration_box.find_elements(By.CSS_SELECTOR, '*')
-                    continue
+                    title = legend.get_attribute('innerText')
+                    print(f"Title: {title}")
+                    
+
+
+                except Exception as e:
+                    print(f"Error occurred: {e}")
+
+
+
+
+
 
         except Exception as e:
-            print(f"Error occurred while applying star rating filter: {e}")
+            print(f"Error occurred: {e}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

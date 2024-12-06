@@ -14,3 +14,7 @@ with Booking() as bot:
 
 
 
+
+
+#         reservation_type = self.driver.find_element(By.CSS_SELECTOR, "#\:r1o\:")
+#         reservation_type.click()
